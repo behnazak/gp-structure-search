@@ -160,7 +160,8 @@ def perform_kernel_search(X, y, D, experiment_data_file_name, results_filename, 
                     for result in best_results:
                         print >> outfile, result 
     
-    # Rename temporary results file to actual results file                
+    # Rename temporary results file to actual results file
+    
     os.rename(results_filename + '.unfinished', results_filename)
 
 def parse_results( results_filename, max_level=None ):
@@ -207,11 +208,11 @@ class Experiment(namedtuple("Experiment", 'description, data_dir, max_depth, ran
                 max_depth = 10,               # How deep to run the search.
                 random_order = False,         # Randomize the order of the datasets?
                 k = 1,                        # Keep the k best kernels at every iteration.  1 => greedy search.
-                debug = False,
+                debug = True,
                 local_computation = True,     # Run experiments locally, or on the cloud.
                 n_rand = 2,                   # Number of random restarts.
                 sd = 4,                       # Standard deviation of random restarts.
-                max_jobs=500,                 # Maximum number of jobs to run at once on cluster.
+                max_jobs=1,                 # Maximum number of jobs to run at once on cluster.
                 verbose=False,
                 make_predictions=False,       # Whether or not to forecast on a test set.
                 skip_complete=True,           # Whether to re-run already completed experiments.
@@ -252,18 +253,19 @@ def run_experiment_file(filename):
 
     for r, file in data_sets:
         # Check if this experiment has already been done.
-        output_file = os.path.join(exp.results_dir, file + "_result.txt")
+        output_file = "D:\\AS\\gpss-research\\examples\\" + file + "_result.txt" #os.path.join(exp.results_dir, file + "_result.txt")
         if not(exp.skip_complete and (os.path.isfile(output_file))):
             print 'Experiment %s' % file
             print 'Output to: %s' % output_file
-            data_file = os.path.join(r, file + ".mat")
-
+            data_file = "D:\\AS\\gpss-research\\data\\1d_data"  + "\\" + file + ".mat" #os.path.join(r, file + ".mat")
+            
             perform_experiment(data_file, output_file, exp )
             print "Finished file %s" % file
         else:
             print 'Skipping file %s' % file
-
-    os.system('reset')  # Stop terminal from going invisible.   
+    print("behnaz debugging: this is where the problem happened")
+    os.system('reset')  # Stop terminal from going invisible.
+    
 
 def generate_model_fits(filename):
     """

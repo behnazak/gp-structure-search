@@ -23,7 +23,7 @@ from utils import gaussians, psd_matrices
 
 import numpy as np
 nax = np.newaxis
-import pylab
+from matplotlib import pylab
 import scipy.io
 import sys
 import os
@@ -141,7 +141,8 @@ def evaluate_kernels(kernels, X, y, verbose=True, noise=None, iters=300, local_c
     if verbose:
         print 'Sending scripts to cblparallel'
     if local_computation:
-        output_files = cblparallel.run_batch_locally(scripts, language='matlab', max_cpu=1.1, job_check_sleep=5, submit_sleep=0.1, max_running_jobs=10, verbose=verbose)  
+        #Behnaz changed max running jobs to 1.
+        output_files = cblparallel.run_batch_locally(scripts, language='matlab', max_cpu=1.1, job_check_sleep=5, submit_sleep=0.3, max_running_jobs=50, verbose=verbose)
     else:
         output_files = cblparallel.run_batch_on_fear(scripts, language='matlab', max_jobs=max_jobs, verbose=verbose, zip_files=zip_files)  
     
@@ -151,6 +152,7 @@ def evaluate_kernels(kernels, X, y, verbose=True, noise=None, iters=300, local_c
         if verbose:
             print 'Reading output file %d of %d' % (i + 1, len(kernels))
         results[i] = ScoredKernel.from_matlab_output(gpml.read_outputs(output_file), kernels[i].family(), ndata)
+
     
     # Tidy up local output files
     for (i, output_file) in enumerate(output_files):

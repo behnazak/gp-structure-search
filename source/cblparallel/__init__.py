@@ -297,6 +297,7 @@ quit()
                         print 'Submitting job %d of %d' % (i + 1, len(scripts)),
                     job_ids[i] = fear.qsub(os.path.join(REMOTE_TEMP_PATH, os.path.split(shell_files[i])[-1]), verbose=verbose) # Hide path constant
                     # Increment job count
+                    
                     jobs_alive += 1
 
                 #### FIXME - This was an attempt at better utilisation of fear - back fired since calling qstat is slow - correct solution is to have job sending and job completion checking in different threads - but would need to be carerful with the shared lists
@@ -415,7 +416,7 @@ quit()
     return output_files
     
 def run_batch_locally(scripts, language='python', paths=[], max_cpu=0.9, max_mem=0.9, submit_sleep=1, job_check_sleep=30, \
-                      verbose=True, max_files_open=100, max_running_jobs=10, single_thread=True):
+                      verbose=True, max_files_open=1, max_running_jobs=2, single_thread=True):
     '''
     Receives a list of python scripts to run
 
@@ -479,6 +480,7 @@ quit()
         for (i, code) in enumerate(scripts):
             if (not job_finished[i]) and (processes[i] is None) and (files_open <= max_files_open) and (len([1 for p in processes if not p is None]) < max_running_jobs):
                 # This script has not been run - check CPU and potentially run
+                print("##############coming back with i %s #############" % i)
                 #### FIXME - Merge if statements
                 if (psutil.cpu_percent() < max_cpu * 100) and (psutil.virtual_memory().percent < max_mem * 100):
                     # Jobs can run
@@ -490,6 +492,7 @@ quit()
                         temp_dir = HOME_TEMP_PATH
                     if language == 'python':
                         script_files[i] = (mkstemp_safe(temp_dir, '.py'))
+                        print("Behnaz Debugging %s" % script_files[i])
                     elif language == 'matlab':
                         script_files[i] = (mkstemp_safe(temp_dir, '.m'))
                     # Create necessary files in local path
@@ -522,7 +525,7 @@ quit()
                             else:
                                 matlab_path = LOCAL_MATLAB
                             if single_thread:
-                                f.write('cd ' + os.path.split(script_files[i])[0] + ';\n' + matlab_path + ' -nosplash -nojvm -nodisplay -singleCompThread -r ' + \
+                                f.write('cd ' + os.path.split(script_files[i])[0] + ';\n' + matlab_path + ' -nosplash -nodesktop -wait -nojvm  -nodisplay -singleCompThread -r ' + \
                                         os.path.split(script_files[i])[-1].split('.')[0] + '\n')
                             else:
                                 f.write('cd ' + os.path.split(script_files[i])[0] + ';\n' + matlab_path + ' -nosplash -nojvm -nodisplay -r ' + \
@@ -532,17 +535,20 @@ quit()
                         print 'Submitting job %d of %d' % (i + 1, len(scripts))
                     stdout_file_handles[i] = open(stdout_files[i], 'w')
                     files_open = files_open + 1
-                    #processes[i] = subprocess.Popen(['sh', shell_files[i]], stdout = stdout_file_handles[i]);
                     with open(shell_files[i], 'r') as shell_file:
                         lines = [line.rstrip() for line in shell_file.readlines()]
-                        processes[i] = subprocess.Popen(' '.join(lines), shell=True, stdout = stdout_file_handles[i]);
+                        
+                        processes[i] = subprocess.Popen(lines[1], shell=True, stdout = stdout_file_handles[i]);
+                        processes[i].wait()
                     # Sleep for a bit so the process can kick in (prevents 100s of jobs being sent to processor)
                     time.sleep(submit_sleep)
             elif (not job_finished[i]) and (not processes[i] is None):
                 # Ask the process how its doing
                 processes[i].poll()
+                
                 # Check to see if the process has completed
-                if not processes[i].returncode is None:
+                #Behnaz changed this from not to None because that is what indicates the process has terminated
+                if processes[i].returncode is None or processes[i].returncode == 0:
                     if os.path.isfile(flag_files[i]):
                         job_finished[i] = True
                         if verbose:
@@ -554,6 +560,7 @@ quit()
                             print 'Job %d has failed - will try again later' % i + 1
                         processes[i] = None
                     # Tidy up temp files
+                    #Behnaz TODO: uncomment this once you have figured things out.
                     os.remove(script_files[i])
                     os.remove(shell_files[i])
                     stdout_file_handles[i].close()

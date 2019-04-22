@@ -228,6 +228,7 @@ def optimize_params(kernel_expression, kernel_init_params, X, y, return_all=Fals
 
 
 def read_outputs(write_file):
+    print("write_file %s" % write_file)
     gpml_result = scipy.io.loadmat(write_file)
     optimized_hypers = gpml_result['hyp_opt']
     nll = gpml_result['best_nll'][0, 0]
