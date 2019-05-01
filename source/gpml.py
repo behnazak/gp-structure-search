@@ -32,7 +32,7 @@ def run_matlab_code(code, verbose=False, jvm=True):
     
     jvm_string = '-nojvm'
     if jvm: jvm_string = ''
-    call = [config.MATLAB_LOCATION, '-nosplash', jvm_string, '-nodisplay']
+    call = [config.MATLAB_LOCATION, '-nosplash', '-nodesktop', '-wait',  jvm_string, '-nodisplay']
     print call
     
     stdin = open(script_file)
