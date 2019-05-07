@@ -21,6 +21,3 @@ def run(data_name, max_depth=3, params=None):
     if params is None:
         params = base.SearchParams.default()
     base.perform_search(X, y, scheduler, max_depth, params, verbose=True)
-
-
-

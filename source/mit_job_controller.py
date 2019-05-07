@@ -158,5 +158,3 @@ def compute_K(kernels, X, Q=None):
     os.remove(output_file)
 
     return K_list
-
-

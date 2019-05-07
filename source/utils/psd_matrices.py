@@ -650,7 +650,7 @@ def proj_psd(H):
     d = np.clip(d, 1e-8, np.infty)
     return np.dot(Q, d[:, nax] * Q.T)
     
-def laplace_approx(nll, opt_hyper, hessian, prior_var=100):
+def laplace_approx(nll, opt_hyper, hessian, prior_var=100000):
     #### FIXME - Believed to have a bug
     ####       - Might be MATLAB though - test this code on some known integrals
     d = opt_hyper.size
@@ -669,7 +669,7 @@ def laplace_approx(nll, opt_hyper, hessian, prior_var=100):
 
     # multiply the two Gaussians and integrate the result
     return -(evidence + prior).integral()
-
+    
 def laplace_approx_no_prior(nll, opt_hyper, hessian, prior_var=100000):
     #### FIXME - Believed to have a bug
     ####       - Might be MATLAB though - test this code on some known integrals
@@ -685,7 +685,7 @@ def laplace_approx_no_prior(nll, opt_hyper, hessian, prior_var=100000):
     return -evidence.integral()
 
 
-def laplace_approx_stable(nll, opt_hyper, hessian, prior_var=100):
+def laplace_approx_stable(nll, opt_hyper, hessian, prior_var=100000):
     H_eig, Q = scipy.linalg.eigh(hessian)
 
     # in these cases, this function should still work, but an ill-conditioned
@@ -711,6 +711,25 @@ def laplace_approx_stable(nll, opt_hyper, hessian, prior_var=100):
     total += -nll
 
     return -total, problems
+    
+def laplace_approx_stable_no_prior(nll, hessian):
+    H_eig, Q = scipy.linalg.eigh(hessian)
+    
+    problems = []
+    if (np.min(H_eig) < -(1e-8)*np.max(H_eig)) or (np.max(H_eig) <= 0):
+        # Check for non-trivially small negative eigenvalues
+        neg_marg_lik = np.nan
+        problems.append('Not PSD')
+        return neg_marg_lik, problems
+    else:    
+        # treat very small values as zero - i.e. computing the pseudo-determinant
+        is_zero = (H_eig < (1e-8)*np.max(H_eig))
+
+        # compute integral
+        temp = np.where(is_zero, 1., (2*np.pi / H_eig))
+        neg_marg_lik = nll - 0.5 * np.sum(np.log(temp))
+
+        return neg_marg_lik, problems
 
 
 def check_laplace_approx():
@@ -725,6 +744,3 @@ def check_laplace_approx():
     ans2 = laplace_approx_stable(nll, opt_hyper, hessian, prior_var)[0]
     assert np.allclose(ans1, ans2)
                        
-
-
-

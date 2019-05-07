@@ -72,8 +72,11 @@ if length>0, S='Linesearch'; else S='Function evaluation'; end
 
 i = 0;                                            % zero the run length counter
 ls_failed = 0;                             % no previous line search has failed
+
 [f0 df0] = feval(f, X, varargin{:});          % get function value and gradient
+
 Z = X; X = unwrap(X); df0 = unwrap(df0);
+
 fprintf('%s %6i;  Value %4.6e\r', S, i, f0);
 if exist('fflush','builtin') fflush(stdout); end
 fX = f0;

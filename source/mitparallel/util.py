@@ -9,4 +9,3 @@ def mkstemp_safe(directory, suffix):
 
 def create_temp_file(extension):
     return mkstemp_safe(config.TEMP_PATH, extension)
-

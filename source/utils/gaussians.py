@@ -344,5 +344,3 @@ class Conditionals:
         J_diff = pot._J - pot._Lambda.dot(X)
         Z_diff = pot.score(X)
         return Conditionals(pot._Lambda, J_diff, Z_diff, X)
-
-

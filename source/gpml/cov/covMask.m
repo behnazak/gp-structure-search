@@ -16,6 +16,7 @@ function K = covMask(cov, hyp, x, z, i)
 mask = fix(cov{1}(:));                    % either a binary mask or an index set
 cov = cov(2);                                 % covariance function to be masked
 %%%% Next line is a quick fix by James Lloyd - might be wrong!
+
 if iscell(cov{:}), cov = cov{:}; end
 nh_string = feval(cov{:});    % number of hyperparameters of the full covariance
 
@@ -42,6 +43,7 @@ if nargin<5                                                        % covariances
 else                                                               % derivatives
   if i <= eval(nh_string)
     if dg
+      display(' this is behnaz')
       K = feval(cov{:}, hyp, x(:,mask), 'diag', i);
     else
       if xeqz

@@ -2,12 +2,11 @@ import collections
 import itertools
 import numpy as np
 nax = np.newaxis
-from PIL import Image
+# import Image
 import mkl_hack
 import scipy.linalg
 import scipy.stats
 import random
-import gc
 
 def set_all_random_seeds(seed=0):
     random.seed(seed)
@@ -16,10 +15,9 @@ def set_all_random_seeds(seed=0):
 def sample_truncated_normal(loc=0, scale=1, min_value=-np.Inf):
     '''Uses inverse cdf method - actually uses survival function sf = 1-cdf'''
     return scipy.stats.norm.isf(np.random.rand() * scipy.stats.norm.sf(min_value, loc=loc, scale=scale), loc=loc, scale=scale)
-
-
-#Behnaz had to change this to optimize for memory.  
+    
 def min_abs_diff(x):
+    '''Minimum absolute difference between all pairs in an iterable'''
     min_res = np.Inf
     x = sorted(x)
     for i in range(len(x)):
@@ -27,7 +25,6 @@ def min_abs_diff(x):
            if abs(x[i] - x[i + 1]) < min_res:
               min_res = abs(x[i] - x[i + 1])
     return min_res
-    #return min([abs(i - j) if (i != j) else np.Inf for i in x for j in x])
 
 def _err_string(arr1, arr2):
     try:
@@ -189,25 +186,61 @@ def my_inv(A):
 def transp(A):
     return A.swapaxes(-2, -1)
 
-def resize(arr, size):
-    assert arr.ndim in [2, 3]
-    if arr.ndim == 3:
-        #return np.concatenate([shape_to_cons('**1', resize(arr[:,:,i], size))
-        #                       for i in range(3)], axis=2)
-        ans = np.concatenate([resize(arr[:,:,i], size)[:,:,nax] for i in range(3)], axis=2)
-        return ans
-    M, N = arr.shape
-    assert arr.dtype in ['float64', 'float32']
-    dtype = arr.dtype
-    m, n = size
-    if m is None:
-        assert n is not None
-        m = int(M * (float(n)/float(N)))
-    if n is None:
-        assert m is not None
-        n = int(N * (float(m)/float(M)))
+# def resize(arr, size):
+#     assert arr.ndim in [2, 3]
+#     if arr.ndim == 3:
+#         #return np.concatenate([shape_to_cons('**1', resize(arr[:,:,i], size))
+#         #                       for i in range(3)], axis=2)
+#         ans = np.concatenate([resize(arr[:,:,i], size)[:,:,nax] for i in range(3)], axis=2)
+#         return ans
+#     M, N = arr.shape
+#     assert arr.dtype in ['float64', 'float32']
+#     dtype = arr.dtype
+#     m, n = size
+#     if m is None:
+#         assert n is not None
+#         m = int(M * (float(n)/float(N)))
+#     if n is None:
+#         assert m is not None
+#         n = int(N * (float(m)/float(M)))
 
-    result = np.array(Image.fromarray(arr.astype('float32'), 'F').resize((n, m), Image.ANTIALIAS),
-                         dtype=dtype)
+#     result = np.array(Image.fromarray(arr.astype('float32'), 'F').resize((n, m), Image.ANTIALIAS),
+#                          dtype=dtype)
 
-    return result
+#     return result
+
+# Pretty printing
+
+try:
+    import termcolor
+    has_termcolor = True
+except:
+    has_termcolor = False
+
+try:
+    import config
+    color_scheme = config.COLOR_SCHEME
+except:
+    color_scheme = 'dark'
+
+def paren_colors():
+    if color_scheme == 'dark':
+        return ['red', 'green', 'cyan', 'magenta', 'yellow']
+    elif color_scheme == 'light':
+        return ['blue', 'red', 'magenta', 'green', 'cyan']
+    else:
+        raise RuntimeError('Unknown color scheme: %s' % color_scheme)
+
+def colored(text, depth):
+    if has_termcolor:
+        colors = paren_colors()
+        color = colors[depth % len(colors)]
+        return termcolor.colored(text, color, attrs=['bold'])
+    else:
+        return text
+
+def format_if_possible(format, value):
+    try:
+        return format % value
+    except:
+        return '%s' % value

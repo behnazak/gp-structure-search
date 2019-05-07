@@ -9,7 +9,6 @@ catch err
   exitcode = 1;
   rethrow(err);
 end
-
 exit(exitcode);
 """
 
@@ -33,5 +32,3 @@ def run(code):
     p.wait()
     if p.returncode:
         raise RuntimeError('Error in Matlab code:\n\n%s' % stderr_value)
-
-

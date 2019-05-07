@@ -67,6 +67,3 @@ def summarize(category, cutoff=0.5, outstr=sys.stdout):
         for tp, sz in k[1:]:
             print >> outstr, '    %s %s' % (tp, sz)
         print >> outstr
-
-
-    
