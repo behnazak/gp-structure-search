@@ -446,7 +446,7 @@ print 'Writing completion flag'
 with open('%(flag_file)s', 'w') as f:
     f.write('Goodbye, World')
 print "Goodbye, World"
-quit()
+%%quit()
 '''
   
     #### TODO - Is this completely stable       
@@ -456,7 +456,7 @@ ID = fopen('%(flag_file)s', 'w');
 fprintf(ID, 'Goodbye, world');
 fclose(ID);
 fprintf('\\nGoodbye, World\\n');
-quit()
+%%quit()
 '''
     
     # Initialise lists of file locations job ids

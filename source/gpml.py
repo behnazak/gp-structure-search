@@ -79,29 +79,29 @@ rand('twister', %(seed)s);
 randn('state', %(seed)s);
 
 a='Load the data, it should contain X and y.'
-load '%(datafile)s'
-X = double(X)
-y = double(y)
+load '%(datafile)s';
+X = double(X);
+y = double(y);
 
 %% Load GPML
 addpath(genpath('%(gpml_path)s'));
 
 %% Set up model.
-meanfunc = {@meanConst}
-hyp.mean = mean(y)
+meanfunc = {@meanConst};
+hyp.mean = mean(y);
 
-covfunc = %(kernel_family)s
-hyp.cov = %(kernel_params)s
+covfunc = %(kernel_family)s;
+hyp.cov = %(kernel_params)s;
 
-likfunc = @likGauss
-hyp.lik = %(noise)s
+likfunc = @likGauss;
+hyp.lik = %(noise)s;
 
 %% Repeat...
 [hyp_opt, nlls] = minimize(hyp, @gp, -int32(%(iters)s * 3 / 3), @infExact, meanfunc, covfunc, likfunc, X, y);
 %% ...optimisation - hopefully restarting optimiser will make it more robust to scale issues
 %% [hyp_opt, nlls_2] = minimize(hyp_opt, @gp, -int32(%(iters)s * 3 / 3), @infExact, meanfunc, covfunc, likfunc, X, y);
 %% nlls = [nlls_1; nlls_2];
-best_nll = nlls(end)
+best_nll = nlls(end);
 
 %% Compute Hessian numerically for laplace approx
 num_hypers = length(hyp_opt.cov);
@@ -132,28 +132,28 @@ randn('state', %(seed)s);
 
 a='Load the data, it should contain X and y.'
 load '%(datafile)s'
-X = double(X)
-y = double(y)
+X = double(X);
+y = double(y);
 
 %% Load GPML
 addpath(genpath('%(gpml_path)s'));
 
 %% Set up model.
-meanfunc = {@meanZero}
+meanfunc = {@meanZero};
 hyp.mean = [];
 
-covfunc = %(kernel_family)s
-hyp.cov = %(kernel_params)s
+covfunc = %(kernel_family)s;
+hyp.cov = %(kernel_params)s;
 
-likfunc = @likGauss
-hyp.lik = %(noise)s
+likfunc = @likGauss;
+hyp.lik = %(noise)s;
 
 %% Repeat...
 [hyp_opt, nlls] = minimize(hyp, @gp, -int32(%(iters)s * 3 / 3), @infExact, meanfunc, covfunc, likfunc, X, y);
 %% ...optimisation - hopefully restarting optimiser will make it more robust to scale issues
 %% [hyp_opt, nlls_2] = minimize(hyp_opt, @gp, -int32(%(iters)s * 3 / 3), @infExact, meanfunc, covfunc, likfunc, X, y);
 %% nlls = [nlls_1; nlls_2];
-best_nll = nlls(end)
+best_nll = nlls(end);
 
 %% Compute Hessian numerically for laplace approx
 num_hypers = length(hyp_opt.cov);
@@ -246,13 +246,13 @@ def read_outputs(write_file):
 # Some Matlab code to sample from a GP prior, in a spectral way.
 GENERATE_NOISELESS_DATA_CODE = r"""
 %% Load the data, it should contain X
-load '%(datafile)s'
-X = double(X)
+load '%(datafile)s';
+X = double(X);
 
 addpath(genpath('%(gpml_path)s'));
 
-covfunc = %(kernel_family)s
-hypers = %(kernel_params)s
+covfunc = %(kernel_family)s;
+hypers = %(kernel_params)s;
 
 sigma = feval(covfunc{:}, hypers, X);  
 sigma = 0.5.*(sigma + sigma');
@@ -261,7 +261,7 @@ values(values < 0) = 0;
 sample = vectors*(randn(length(values), 1).*sqrt(diag(values)));
 
 save( '%(writefile)s', 'sample' );
-exit();
+%%exit();
 """
 
 def sample_from_gp_prior(kernel, X):
@@ -295,15 +295,15 @@ def sample_from_gp_prior(kernel, X):
 # Matlab code to evaluate a covariance function at a bunch of locations.
 EVAL_KERNEL_CODE = r"""
 %% Load the data, it should contain X and x0.
-load '%(datafile)s'
-X = double(X)
-x0 = double(x0)
+load '%(datafile)s';
+X = double(X);
+x0 = double(x0);
 
-a='Load GPML'
+a='Load GPML';
 addpath(genpath('%(gpml_path)s'));
 
-covfunc = %(kernel_family)s
-hypers = %(kernel_params)s
+covfunc = %(kernel_family)s;
+hypers = %(kernel_params)s;
 
 sigma = feval(covfunc{:}, hypers, X, x0);
 
@@ -344,35 +344,35 @@ rand('twister', %(seed)s);
 randn('state', %(seed)s);
 
 %% Load the data, it should contain X, y, X_test
-load '%(datafile)s'
-X = double(X)
-y = double(y)
-Xtest = double(Xtest)
+load '%(datafile)s';
+X = double(X);
+y = double(y);
+Xtest = double(Xtest);
 
 addpath(genpath('%(gpml_path)s'));
 
 %% Set up model.
-meanfunc = {@meanConst}
-hyp.mean = mean(y)
+meanfunc = {@meanConst};
+hyp.mean = mean(y);
 
-covfunc = %(kernel_family)s
-hyp.cov = %(kernel_params)s
+covfunc = %(kernel_family)s;
+hyp.cov = %(kernel_params)s;
 
-likfunc = @likGauss
-hyp.lik = %(noise)s
+likfunc = @likGauss;
+hyp.lik = %(noise)s;
 
 [hyp, nlls] = minimize(hyp, @gp, -%(iters)s, @infExact, meanfunc, covfunc, likfunc, X, y);
 
 %%HACK
 
-hyp.cov = %(kernel_params)s
+hyp.cov = %(kernel_params)s;
 K = feval(covfunc{:}, hyp.cov, X);
 K = K + exp(hyp.lik * 2) * eye(size(K));
 
 %% We have now found appropriate mean and noise parameters
 
-component_covfunc = %(component_kernel_family)s
-hyp.cov = %(component_kernel_params)s
+component_covfunc = %(component_kernel_family)s;
+hyp.cov = %(component_kernel_params)s;
 
 component_K = feval(component_covfunc{:}, hyp.cov, X, X_test)';
 
@@ -387,22 +387,22 @@ rand('twister', %(seed)s);
 randn('state', %(seed)s);
 
 %% Load the data, it should contain X, y, X_test
-load '%(datafile)s'
-X = double(X)
-y = double(y)
-Xtest = double(Xtest)
+load '%(datafile)s';
+X = double(X);
+y = double(y);
+Xtest = double(Xtest);
 
 addpath(genpath('%(gpml_path)s'));
 
 %% Set up model.
-meanfunc = {@meanZero}
-hyp.mean = []
+meanfunc = {@meanZero};
+hyp.mean = [];
 
-covfunc = %(kernel_family)s
-hyp.cov = %(kernel_params)s
+covfunc = %(kernel_family)s;
+hyp.cov = %(kernel_params)s;
 
-likfunc = @likGauss
-hyp.lik = %(noise)s
+likfunc = @likGauss;
+hyp.lik = %(noise)s;
 
 [hyp, nlls] = minimize(hyp, @gp, -%(iters)s, @infExact, meanfunc, covfunc, likfunc, X, y);
 
@@ -414,8 +414,8 @@ K = K + exp(hyp.lik * 2) * eye(size(K));
 
 %% We have now found appropriate mean and noise parameters
 
-component_covfunc = %(component_kernel_family)s
-hyp.cov = %(component_kernel_params)s
+component_covfunc = %(component_kernel_family)s;
+hyp.cov = %(component_kernel_params)s;
 
 component_K = feval(component_covfunc{:}, hyp.cov, X, X_test)';
 
@@ -481,27 +481,27 @@ randn('state', %(seed)s);
 
 a='Load the data, it should contain X and y.'
 load '%(datafile)s'
-X = double(X)
-y = double(y)
-Xtest = double(Xtest)
-ytest = double(ytest)
+X = double(X);
+y = double(y);
+Xtest = double(Xtest);
+ytest = double(ytest);
 
 %% Load GPML
 addpath(genpath('%(gpml_path)s'));
 
 %% Set up model.
-meanfunc = {@meanConst}
-hyp.mean = mean(y)
+meanfunc = {@meanConst};
+hyp.mean = mean(y);
 
-covfunc = %(kernel_family)s
-hyp.cov = %(kernel_params)s
+covfunc = %(kernel_family)s;
+hyp.cov = %(kernel_params)s;
 
-likfunc = @likGauss
-hyp.lik = %(noise)s
+likfunc = @likGauss;
+hyp.lik = %(noise)s;
 
 %% Optimize a little anyways.
 [hyp_opt, nlls] = minimize(hyp, @gp, -%(iters)s, @infExact, meanfunc, covfunc, likfunc, X, y);
-best_nll = nlls(end)
+best_nll = nlls(end);
 
 model.hypers = hyp_opt;
 
@@ -509,7 +509,7 @@ model.hypers = hyp_opt;
 [ymu, ys2, predictions, fs2, loglik] = gp(model.hypers, @infExact, meanfunc, covfunc, likfunc, X, y, Xtest, ytest)
 
 actuals = ytest;
-timestamp = now
+timestamp = now;
 
 '%(writefile)s'
 
@@ -528,28 +528,28 @@ rand('twister', %(seed)s);
 randn('state', %(seed)s);
 
 a='Load the data, it should contain X and y.'
-load '%(datafile)s'
-X = double(X)
-y = double(y)
-Xtest = double(Xtest)
-ytest = double(ytest)
+load '%(datafile)s';
+X = double(X);
+y = double(y);
+Xtest = double(Xtest);
+ytest = double(ytest);
 
 %% Load GPML
 addpath(genpath('%(gpml_path)s'));
 
 %% Set up model.
-meanfunc = {@meanZero}
-hyp.mean = []
+meanfunc = {@meanZero};
+hyp.mean = [];
 
-covfunc = %(kernel_family)s
-hyp.cov = %(kernel_params)s
+covfunc = %(kernel_family)s;
+hyp.cov = %(kernel_params)s;
 
-likfunc = @likGauss
-hyp.lik = %(noise)s
+likfunc = @likGauss;
+hyp.lik = %(noise)s;
 
 %% Optimize a little anyways.
 [hyp_opt, nlls] = minimize(hyp, @gp, -%(iters)s, @infExact, meanfunc, covfunc, likfunc, X, y);
-best_nll = nlls(end)
+best_nll = nlls(end);
 
 model.hypers = hyp_opt;
 
@@ -557,7 +557,7 @@ model.hypers = hyp_opt;
 [ymu, ys2, predictions, fs2, loglik] = gp(model.hypers, @infExact, meanfunc, covfunc, likfunc, X, y, Xtest, ytest)
 
 actuals = ytest;
-timestamp = now
+timestamp = now;
 
 '%(writefile)s'
 
@@ -590,8 +590,8 @@ def make_predictions(kernel_expression, kernel_init_params, data_file, write_fil
 # Matlab code to evaluate DISTANCE of kernels
 DISTANCE_CODE_HEADER = r"""
 fprintf('Load the data, it should contain inputs X')
-load '%(datafile)s'
-X = double(X)
+load '%(datafile)s';
+X = double(X);
 
 %% Load GPML
 addpath(genpath('%(gpml_path)s'));
@@ -600,8 +600,8 @@ addpath(genpath('%(gpml_path)s'));
 """
 
 DISTANCE_CODE_COV = r"""
-covs{%(iter)d} = %(kernel_family)s
-hyps{%(iter)d} = %(kernel_params)s
+covs{%(iter)d} = %(kernel_family)s;
+hyps{%(iter)d} = %(kernel_params)s;
 """
 
 DISTANCE_CODE_FOOTER = r"""

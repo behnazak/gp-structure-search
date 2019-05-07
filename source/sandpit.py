@@ -1,6 +1,5 @@
 '''
 Created on Nov 2012
-
 @authors: James Robert Lloyd (jrl44@cam.ac.uk)
           David Duvenaud (dkd23@cam.ac.uk)
           Roger Grosse (rgrosse@mit.edu)
@@ -508,26 +507,19 @@ OPTIMIZE_KERNEL_CODE = r"""
 a = 'trying to load data files'
 load '%(datafile)s'
 a = 'loaded data files'
-
 %% Load GPML
 addpath(genpath('%(gpml_path)s'));
 a = 'loaded GPML'
-
 %% Set up model.
 meanfunc = {@meanConst}
 hyp.mean = mean(y)
-
 covfunc = %(kernel_family)s
 hyp.cov = %(kernel_params)s
-
 likfunc = @likGauss
 hyp.lik = %(noise)s
-
 [hyp_opt, nlls] = minimize(hyp, @gp, -%(iters)s, @infExact, meanfunc, covfunc, likfunc, X, y);
 best_nll = nlls(end)
-
 laplace_nle = best_nll %% HACK HACK HACK
-
 save( '%(writefile)s', 'hyp_opt', 'best_nll', 'nlls', 'laplace_nle' );
 a = 'Goodbye, World!'
 exit();
@@ -1001,3 +993,6 @@ def debug_laplace():
     
 
 
+def debug_descriptions():
+    ck = fk.Carls_Mauna_kernel()
+    print ck.english()
