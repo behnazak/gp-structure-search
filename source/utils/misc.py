@@ -7,6 +7,7 @@ import mkl_hack
 import scipy.linalg
 import scipy.stats
 import random
+import gc
 
 def set_all_random_seeds(seed=0):
     random.seed(seed)
@@ -15,10 +16,18 @@ def set_all_random_seeds(seed=0):
 def sample_truncated_normal(loc=0, scale=1, min_value=-np.Inf):
     '''Uses inverse cdf method - actually uses survival function sf = 1-cdf'''
     return scipy.stats.norm.isf(np.random.rand() * scipy.stats.norm.sf(min_value, loc=loc, scale=scale), loc=loc, scale=scale)
-    
+
+
+#Behnaz had to change this to optimize for memory.  
 def min_abs_diff(x):
-    '''Minimum absolute difference between all pairs in an iterable'''
-    return min([abs(i - j) if (i != j) else np.Inf for i in x for j in x])
+    min_res = np.Inf
+    x = sorted(x)
+    for i in range(len(x)):
+         if i + 1 < len(x):
+           if x[i] != x[i-1] and abs(x[i] - x[i + 1]) < min_res:
+              min_res = abs(x[i] - x[i + 1])
+    return min_res
+    #return min([abs(i - j) if (i != j) else np.Inf for i in x for j in x])
 
 def _err_string(arr1, arr2):
     try:
