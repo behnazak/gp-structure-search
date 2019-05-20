@@ -22,7 +22,7 @@ def min_abs_diff(x):
     x = sorted(x)
     for i in range(len(x)):
          if i + 1 < len(x):
-           if abs(x[i] - x[i + 1]) < min_res:
+           if x[i] != x[i+1] and abs(x[i] - x[i + 1]) < min_res:
               min_res = abs(x[i] - x[i + 1])
     return min_res
 
