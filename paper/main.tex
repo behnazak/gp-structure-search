@@ -1,0 +1,240 @@
+\documentclass{sig-alternate-10pt}
+\usepackage{notoccite}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{graphicx}
+\usepackage{times}
+\usepackage{xspace}
+\usepackage[svgnames]{xcolor}
+\usepackage[english]{babel}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{comment}
+
+\usepackage{algorithm}% http://ctan.org/pkg/algorithms
+\usepackage{algorithmic}
+
+
+\newcommand{\eat}[1]{{\color{red}#1}\\}
+\newcommand{\fixme}[1]{{\color{red}#1}\\}
+
+\linespread{1}
+\usepackage{float}
+\newcommand{\EDIT}[1]{{#1}}
+\newcommand{\TODO}[1]{\colorbox{AliceBlue}{\textcolor{Navy}{((#1))}}}
+
+\newcommand{\minlan}[1]{{\color{red}[Minlan: #1]}}
+\newcommand{\vl}[1]{{\color{red}[VL: #1]}}
+\newcommand{\team}[0]{PhyNet\xspace}
+\newcommand{\name}[0]{Scout\xspace}
+
+%%Public incident commands
+\newcommand{\numPublicIncidents}{130\xspace}
+\newcommand{\numTopLevel}{10\xspace}
+\newcommand{\numWithMultipleComponents}{33\xspace}
+\newcommand{\numExplicitlyAcknowledged}{6\xspace}
+\newcommand{\numUpdateRelated}{15\xspace}
+
+%%survey commands
+\newcommand{\numOperators}[0]{27\xspace} %% total number of participants
+\newcommand{\numHighImpact}[0]{17\xspace} %%number that selected incident routing has impact above 4 (scale 1-5)
+\newcommand{\numteamsfirstbucket}[0]{14\xspace} %% number of respondants to the survey that had between 1-10 teams.
+\newcommand{\numteamssecondbucket}[0]{1\xspace} %%number of respondants to the survey that had between 10-20 teams.
+\newcommand{\numteamsthirdbucket}[0]{8\xspace} %%number of respondants to the survey that had between 20-100 teams
+\newcommand{\numteamsfourthbucket}[0]{1\xspace} %%number of respondants to the survey that had between 100-1000 teams.
+\newcommand{\numteamsfifthbucket}[0]{1\xspace} %%number or respondants to the survey that had more than 1000 teams.
+
+\newcommand{\numUsersFirst}[0]{4\xspace} %%number of users between 1-1000
+\newcommand{\numUsersSecond}[0]{5\xspace}%%number of users between 1000-10000
+\newcommand{\numUsersThird}[0]{11\xspace} %%number of users between 10000-100k
+\newcommand{\numUsersFourth}[0]{3\xspace}%%number of users between 100k-1m
+\newcommand{\numUsersFifth}[0]{4\xspace} %% \ge 1m
+%%number in each category of type
+\newcommand{\numISP}[0]{9\xspace}
+\newcommand{\numEnterprise}[0]{10\xspace}
+\newcommand{\numDC}[0]{5\xspace}
+\newcommand{\numCDN}[0]{1\xspace}
+\newcommand{\numNoNewMonitoring}{11 \xspace}
+
+\newcommand{\numHigherthanthree}[0]{23\xspace} %%number of operators saying that incident routing was more than 3 in impact
+\newcommand{\numNotBlamed}[0]{20\xspace} %%number of operators saying that when incident occurs it is incorrectly blamed to a team OTHER than networking
+\newcommand{\numTeamsInvolved}[0]{14\xspace}%%num teams involved in investigation more than 3
+\newcommand{\numTeamsmorethanTwo}[0]{19\xspace}
+
+
+
+\usepackage{url}
+
+\usepackage{tikz}
+%%\usepackage{subcaption}
+\usepackage{graphicx}
+%\graphicspath{{images/}}
+
+
+% cope with the cls already providing 'proof' environments
+\let\proof\relax
+\let\endproof\relax
+\usepackage{url}
+\usepackage{thumbpdf}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{balance}
+\usepackage{clrscode}
+\usepackage{enumitem}
+\usepackage{gensymb}
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{claim}{Claim}
+\newtheorem{definition}{Definition}
+%\newtheorem{lemma}{Lemma}
+\newtheorem{lemma}[theorem]{Lemma}
+
+\usepackage{dsfont,bm}
+
+\newcommand{\Section}[1]{\vspace{1mm}\section{#1}\vspace{1mm}}
+\newcommand{\SectionS}[1]{\vspace{1mm}\section*{#1}\vspace{1mm}}
+\newcommand{\Subsection}[1]{\vspace{1mm}\subsection{#1}\vspace{1mm}}
+\newcommand{\Subsubsection}[1]{\vspace{1mm}\subsubsection{#1}\vspace{1mm}}
+
+% ========== Macros ==========
+\newcolumntype{v}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
+\newcommand{\npod}{\ensuremath{n_\textup{pod}}}
+\let\Pr\relax
+\DeclareMathOperator{\Pr}{\mathbb{P}}
+\DeclareMathOperator{\DKL}{D_{KL}}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\minimize}{minimize}
+\newcommand{\norm}[1]{\ensuremath{\left\| #1 \right\|}}
+\newcommand{\abs}[1]{\ensuremath{\left\vert #1 \right\vert}}
+\newcommand{\naive}[0]{na\"ive\xspace}
+
+% -- Shorthands --
+\newcommand{\ones}{\ensuremath{\mathds{1}}}
+\newcommand{\calA}{\ensuremath{\mathcal{A}}}
+\newcommand{\calC}{\ensuremath{\mathcal{C}}}
+\newcommand{\calF}{\ensuremath{\mathcal{F}}}
+\newcommand{\calL}{\ensuremath{\mathcal{L}}}
+\newcommand{\calO}{\ensuremath{\mathcal{O}}}
+\newcommand{\calP}{\ensuremath{\mathcal{P}}}
+\newcommand{\bB}{\ensuremath{\bm{B}}}
+\def\Sys{Vigil\xspace}
+\newcommand{\eval}[1]{\texttt{\scriptsize #1}}
+
+\setlength{\pdfpagewidth}{8.5in}
+
+\setlength{\pdfpageheight}{11in}
+
+\newenvironment{compactList}{\begin{list}{$\bullet$}{\leftmargin=1em}%
+    {   \setlength{\itemsep}{0mm}%
+        \setlength{\topsep}{0mm}}%
+    }%
+{\end{list}}
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+\usepackage{listings}
+% ========== Inkscape integration macro ==========
+%\newcommand{\includesvg}[2][scale=1]{%
+%\includegraphics[#1]{Figures/#2.pdf}%
+%}
+
+%% Recompile figures from SVG (requires inkscape)
+%\newcommand{\executeiffilenewer}[3]{%
+%\ifnum\pdfstrcmp{\pdffilemoddate{#1}}%
+%{\pdffilemoddate{#2}}>0%
+%{\immediate\write18{#3}}\fi%
+%}
+%\newcommand{\includesvg}[2][scale=1]{%
+%\executeiffilenewer{Figures/#2.svg}{Figures/#2.pdf}%
+%{inkscape -z -D --file=Figures/#2.svg --export-pdf=Figures/#2.pdf --export-pdf-version="1.5" --export-dpi=300}%
+%\includegraphics[#1]{Figures/#2.pdf}%
+%}
+
+
+
+\numberofauthors{5}
+%\usepackage{authblk}
+\date{}
+
+\title{Network Scouts: Consulting network experts only when necessary}
+%\title{Beyond Network Diagnosis:
+%	Improving Incident Mitigation in Production Data Centers}
+
+\author{}
+%\author{Behnaz Arzani$^*$,~Selim Ciracil$^\dagger$,~Boon Thau Loo$^*$,~Assaf Schuster$^\ddagger$, and~Geoff Outhred$^\dagger$\\
+%$^*$~University of Pennsylvania, $\dagger$~Microsoft, $\ddagger$~Technion - Israel Institute of Technology}
+
+
+%\addtolength{\textwidth}     {4mm}
+%
+%\addtolength{\evensidemargin}{-4mm}
+%
+%\addtolength{\oddsidemargin} {-4mm}
+%
+%\addtolength{\textheight}    {8mm}
+%
+\addtolength{\topmargin}     {-5mm}\date{}
+
+
+%%code snipet making it look nice
+
+\lstset{frame=tb,
+	language=python,
+	aboveskip=1mm,
+	belowskip=1mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3
+}
+
+
+\begin{document}
+
+
+
+
+\maketitle
+
+\begin{abstract}
+Routing incidents to the responsible party is critical when performance problems arise in data centers.
+	%In today's cloud data centers, it is essential to mitigate incidents in order to minimize impact to customers.
+	%Applications running inside data centers are often distributed systems that rely on end-to-end connectivity both inside the data center as well as within ISPs that connect them to users over the Internet.
+	%Today, each of these components is a highly complex system that is managed by hundreds of teams and even more engineers. Because of this, finding the failed component is critical to fast mitigation of incidents so that domain experts can quickly identify the root cause and mitigate the problem. 
+	Our analysis of publicly disclosed incidents from two major clouds and private data from one provider show that this is a challenging task---today's applications are complex distributed systems with equally complex dependency trees.
+	It is difficult for a single monolithic system to have visibility into all components of the data center as well as that of other organizations such as ISPs and customer applications. As a result, incidents often ping-pong between multiple engineering teams and even multiple organizations until they are resolved.
+	
+	In this work, we take an entity/team-specific approach to solving this problem. We show, in practice, the data center's physical network is on the path of most incidents. {\color{red} BA: Lets see if by NSDI we can have more than this one team.} By quickly identifying whether the data center's physical network is responsible for a problem we can reduce time to mitigation of incidents by XXX\%. Based on this observation we design a Scout framework for the operator's physical network that can identify whether {\em its} physical network is responsible. Our framework is general (applies to all types of incidents), leverages existing monitoring systems, and evolves as new monitoring systems are added and removed without any additional effort by the operators. It has a true positive rate of 98\% and a true negative rate of 97\%. 
+	
+\end{abstract}
+
+\input{intro.tex}
+\input{measurement.tex}
+\input{single_team.tex}
+\input{new_design.tex}
+%\input{arch.tex}
+%\input{scoute.tex}
+%\input{datasources.tex}
+\input{framework.tex}
+%\input{approaches.tex}
+\input{discussion}
+\input{relatedwork.tex}
+\input{conclusion.tex}
+
+
+\newpage
+\bibliographystyle{unsrt}
+\bibliography{sonic}
+%\end{scriptsize}
+\end{document}
