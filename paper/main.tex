@@ -160,7 +160,7 @@
 %\usepackage{authblk}
 \date{}
 
-\title{Network Scouts: Consulting network experts only when necessary}
+\title{Automated Machine Learning For Networking Problems}
 %\title{Beyond Network Diagnosis:
 %	Improving Incident Mitigation in Production Data Centers}
 
@@ -208,33 +208,15 @@
 \maketitle
 
 \begin{abstract}
-Routing incidents to the responsible party is critical when performance problems arise in data centers.
-	%In today's cloud data centers, it is essential to mitigate incidents in order to minimize impact to customers.
-	%Applications running inside data centers are often distributed systems that rely on end-to-end connectivity both inside the data center as well as within ISPs that connect them to users over the Internet.
-	%Today, each of these components is a highly complex system that is managed by hundreds of teams and even more engineers. Because of this, finding the failed component is critical to fast mitigation of incidents so that domain experts can quickly identify the root cause and mitigate the problem. 
-	Our analysis of publicly disclosed incidents from two major clouds and private data from one provider show that this is a challenging task---today's applications are complex distributed systems with equally complex dependency trees.
-	It is difficult for a single monolithic system to have visibility into all components of the data center as well as that of other organizations such as ISPs and customer applications. As a result, incidents often ping-pong between multiple engineering teams and even multiple organizations until they are resolved.
-	
-	In this work, we take an entity/team-specific approach to solving this problem. We show, in practice, the data center's physical network is on the path of most incidents. {\color{red} BA: Lets see if by NSDI we can have more than this one team.} By quickly identifying whether the data center's physical network is responsible for a problem we can reduce time to mitigation of incidents by XXX\%. Based on this observation we design a Scout framework for the operator's physical network that can identify whether {\em its} physical network is responsible. Our framework is general (applies to all types of incidents), leverages existing monitoring systems, and evolves as new monitoring systems are added and removed without any additional effort by the operators. It has a true positive rate of 98\% and a true negative rate of 97\%. 
+TBD.
 	
 \end{abstract}
 
 \input{intro.tex}
-\input{measurement.tex}
-\input{single_team.tex}
-\input{new_design.tex}
-%\input{arch.tex}
-%\input{scoute.tex}
-%\input{datasources.tex}
-\input{framework.tex}
-%\input{approaches.tex}
-\input{discussion}
-\input{relatedwork.tex}
-\input{conclusion.tex}
 
 
 \newpage
 \bibliographystyle{unsrt}
-\bibliography{sonic}
+\bibliography{relatedwork}
 %\end{scriptsize}
 \end{document}
